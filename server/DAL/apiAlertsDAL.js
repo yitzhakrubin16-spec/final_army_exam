@@ -5,3 +5,7 @@ const alerts = db.collection("alerts")
 export async function createAlert(alert) {
     return alerts.insertOne(alert)
 }
+
+export async function getAlerts() {
+    return alerts.find().toArray()
+}

@@ -1,5 +1,8 @@
 import { alertSchema } from "../Schemas/alertSchema.js"
-import { createAlert } from "../DAL/apiAlertsDAL.js"
+import { 
+    createAlert,
+    getAlerts
+ } from "../DAL/apiAlertsDAL.js"
 
 export async function createAlertService(body) {
     const result = alertSchema.safeParse(body)
@@ -20,4 +23,11 @@ export async function createAlertService(body) {
         id: response.insertedId.toString(),
         ...alert
     }
+}
+
+export async function getAlertsService() {
+
+    const response = await getAlerts()
+
+    return response
 }
