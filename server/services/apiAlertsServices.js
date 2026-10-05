@@ -1,7 +1,9 @@
+import { ObjectId } from "mongodb"
 import { alertSchema } from "../Schemas/alertSchema.js"
 import { 
     createAlert,
-    getAlerts
+    getAlerts,
+    getAlertByID
  } from "../DAL/apiAlertsDAL.js"
 
 export async function createAlertService(body) {
@@ -28,6 +30,24 @@ export async function createAlertService(body) {
 export async function getAlertsService() {
 
     const response = await getAlerts()
+
+    return response
+}
+
+export async function getAlertByIDService(id) {
+    if(!(new ObjectId(id))){
+        const error = new Error("Valid alert ID required");
+        error.status = 400;
+        throw error;
+    }
+
+    const response = await getAlertByID(id);
+
+    if(!response){
+        const error = new Error("Alert Not Found");
+        error.status = 404;
+        throw error;
+    }
 
     return response
 }
