@@ -3,7 +3,8 @@ import { alertSchema } from "../Schemas/alertSchema.js"
 import { 
     createAlert,
     getAlerts,
-    getAlertByID
+    getAlertByID,
+    deleteAlert
  } from "../DAL/apiAlertsDAL.js"
 
 export async function createAlertService(body) {
@@ -35,7 +36,7 @@ export async function getAlertsService() {
 }
 
 export async function getAlertByIDService(id) {
-    if(!(new ObjectId(id))){
+    if(!(ObjectId.isValid(id))){
         const error = new Error("Valid alert ID required");
         error.status = 400;
         throw error;
@@ -49,5 +50,24 @@ export async function getAlertByIDService(id) {
         throw error;
     }
 
+}
+
+export async function deleteAlertService(id) {
+    if(!(ObjectId.isValid(id))){
+        const error = new Error("Valid alert ID required");
+        error.status = 400;
+        throw error;
+    }
+
+    const isEsixt = await getAlertByID(id);
+
+    if(!isEsixt){
+        const error = new Error("Alert Not Found");
+        error.status = 404;
+        throw error;
+    }
+
+    const response = await deleteAlert(id)
+    
     return response
 }

@@ -14,3 +14,7 @@ export async function getAlerts() {
 export async function getAlertByID(id) {
     return alerts.findOne({_id: new ObjectId(id)})
 }
+
+export async function deleteAlert(id) {
+    return alerts.findOneAndDelete({_id: new ObjectId(id)})
+}
