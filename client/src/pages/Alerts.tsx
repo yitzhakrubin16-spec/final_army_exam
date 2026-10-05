@@ -31,7 +31,8 @@ function Alerts() {
        <h1>Alerts</h1>
        <ol>
         {alerts.map((alert) => (<li key={alert.id}><p>Title: {alert.displayName}</p> 
-          <p>Description: {alert.description}</p> 
+          <p>Description: {alert.description}</p>
+          <p>Priority: {alert.priority}</p> 
           <p>Status: {alert.status}</p> 
           <p>Arena: {alert.arena}</p></li>))}
        </ol>
