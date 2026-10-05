@@ -10,7 +10,7 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/health', (req, res) => {
-  res.send('Server is woorking');
+  res.send('Server is working');
 });
 
 
