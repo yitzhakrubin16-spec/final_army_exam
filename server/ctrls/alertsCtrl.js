@@ -2,7 +2,8 @@ import {
     createAlertService,
     getAlertsService,
     getAlertByIDService,
-    deleteAlertService
+    deleteAlertService,
+    updateAlertService
  } from "../services/apiAlertsServices.js"
 
 export async function postAlertController(req, res, next) {
@@ -39,6 +40,15 @@ export async function deleteAlertController(req, res, next) {
             "message": "Alert deleted successfully",
             "alert": response     
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export async function updateAlertController(req, res, next) {
+    try {
+        const alert = await updateAlertService(req.params.id, req.body)
+        res.status(200).json({"updated alert successfully" : alert})
     } catch (error) {
         next(error)
     }
