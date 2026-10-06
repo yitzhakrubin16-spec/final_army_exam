@@ -7,8 +7,9 @@ import {
     deleteAlert,
     updateAlert
  } from "../DAL/apiAlertsDAL.js"
+import { getUserService } from "./apiAuthServices.js"
 
-export async function createAlertService(body) {
+export async function createAlertService(body, user) {
     const result = alertSchema.safeParse(body)
     
     if (!result.success) {
@@ -21,6 +22,20 @@ export async function createAlertService(body) {
         ...result.data
     }
 
+    const userFromDb = await getUserService(user.id)
+
+    if(!userFromDb){
+        const error = new Error("User Not Found");
+        error.status = 404;
+        throw error;
+    }
+
+    if((userFromDb.role === "arena_user" || userFromDb.role === "general_user") && body.arena !== userFromDb.assignedArena){
+        const error = new Error("You are unauthrized to create an alert out of your assigned arena")
+        error.status = 403
+        throw error
+    }
+    
     const response = await createAlert(alert)
 
     return {
@@ -29,14 +44,27 @@ export async function createAlertService(body) {
     }
 }
 
-export async function getAlertsService() {
+export async function getAlertsService(user) {
+    const userFromDb = await getUserService(user.id)
+
+    if(!userFromDb){
+        const error = new Error("User Not Found");
+        error.status = 404;
+        throw error;
+    }
+
+    if(userFromDb.role === "arena_user"){
+        const error = new Error("You are unauthrized to see all the alerts")
+        error.status = 403
+        throw error
+    }
 
     const response = await getAlerts()
 
     return response
 }
 
-export async function getAlertByIDService(id) {
+export async function getAlertByIDService(id, user) {
     if(!(ObjectId.isValid(id))){
         const error = new Error("Valid alert ID required");
         error.status = 400;
@@ -51,13 +79,27 @@ export async function getAlertByIDService(id) {
         throw error;
     }
 
+    const userFromDb = await getUserService(user.id)
+
+    if(!userFromDb){
+        const error = new Error("User Not Found");
+        error.status = 404;
+        throw error;
+    }
+
+    if(userFromDb.role === "arena_user" && response.arena !== userFromDb.assignedArena){
+        const error = new Error("You are unauthrized to see this alert")
+        error.status = 403
+        throw error
+    }
+
     return {
         id: response.insertedId.toString(),
         ...response
     }
 }
 
-export async function deleteAlertService(id) {
+export async function deleteAlertService(id, user) {
     if(!(ObjectId.isValid(id))){
         const error = new Error("Valid alert ID required");
         error.status = 400;
@@ -72,12 +114,26 @@ export async function deleteAlertService(id) {
         throw error;
     }
 
+    const userFromDb = await getUserService(user.id)
+
+    if(!userFromDb){
+        const error = new Error("User Not Found");
+        error.status = 404;
+        throw error;
+    }
+
+    if((userFromDb.role === "arena_user" || userFromDb.role === "general_user") && isEsixt.arena !== userFromDb.assignedArena){
+        const error = new Error("You are unauthrized to delete this alert")
+        error.status = 403
+        throw error
+    }
+
     const response = await deleteAlert(id)
     
     return response
 }
 
-export async function updateAlertService(id, body) {
+export async function updateAlertService(id, body, user) {
     const result = alertSchema.safeParse(body)
 
     if (!result.success) {
@@ -102,6 +158,28 @@ export async function updateAlertService(id, body) {
         const error = new Error("Alert Not Found");
         error.status = 404;
         throw error;
+    }
+
+    const userFromDb = await getUserService(user.id)
+
+    if(!userFromDb){
+        const error = new Error("User Not Found");
+        error.status = 404;
+        throw error;
+    }
+
+    if(userFromDb.role === "arena_user" && isEsixt.arena !== userFromDb.assignedArena){
+        const error = new Error("You are unauthrized to update this alert")
+        error.status = 403
+        throw error
+    }
+
+    if((userFromDb.role === "general_user" && isEsixt.arena !== userFromDb.assignedArena) 
+        && (isEsixt.displayName !== updateAlert.displayName || isEsixt.description !== updateAlert.description
+    || isEsixt.priority !== updateAlert.priority || isEsixt.arena !== updateAlert.arena)){
+        const error = new Error("You are authrized to update only the status in this alert")
+        error.status = 403
+        throw error
     }
 
     const response = await updateAlert(id, updatedAlert)

@@ -105,14 +105,26 @@ export async function getAllUsersService(role) {
     }
 
     const users = await getAllUsers()
-
-    return users
+    
+    return users.map((user) => ({
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        assignedArena: user.assignedArena
+    }))
 }
 
 export async function getUserService(id) {
     const user = await findUserById(id)
 
-    return user
+    const safeUser = {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        assignedArena: user.assignedArena
+    }
+
+    return safeUser
 }
 
 
