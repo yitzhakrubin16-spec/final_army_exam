@@ -10,7 +10,7 @@ import {
 
 export async function createAlertService(body) {
     const result = alertSchema.safeParse(body)
-
+    
     if (!result.success) {
         const error = new Error("Invalid alert details")
         error.status = 400
@@ -51,7 +51,10 @@ export async function getAlertByIDService(id) {
         throw error;
     }
 
-    return response
+    return {
+        id: response.insertedId.toString(),
+        ...response
+    }
 }
 
 export async function deleteAlertService(id) {
@@ -71,7 +74,10 @@ export async function deleteAlertService(id) {
 
     const response = await deleteAlert(id)
     
-    return response
+    return {
+        id: response.insertedId.toString(),
+        ...response
+    }
 }
 
 export async function updateAlertService(id, body) {
@@ -103,5 +109,8 @@ export async function updateAlertService(id, body) {
 
     const response = await updateAlert(id, updatedAlert)
     
-    return response
+    return {
+        id: response.insertedId.toString(),
+        ...response
+    }
 }

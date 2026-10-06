@@ -1,8 +1,12 @@
-// import { ObjectId } from "mongodb"
-// import db from "../db/db.js"
+import { ObjectId } from "mongodb"
+import db from "../db/db.js"
 
-// const alerts = db.collection("users")
+const users = db.collection("users")
 
-// export async function createUser(user) {
-//     return alerts.insertOne(user)
-// }
+export async function createUser(user) {
+    return users.insertOne(user)
+}
+
+export async function findUserByEmail(email) {
+    return users.findOne({email})
+}

@@ -1,10 +1,6 @@
-// import { 
-//     loginAuthService,
-//     getAllUsersService,
-//     getUserService,
-//     deleteUserService,
-//     createUserService
-//  } from "../services/apiAlertsServices.js"
+import { 
+    createUserService
+ } from "../services/apiAuthServices.js"
 
 // export async function loginAuthController(req, res, next) {
 //     try {
@@ -45,11 +41,11 @@
 //     }
 // }
 
-// export async function createUserController(req, res, next) {
-//     try {
-//         const user = await createUserService()
-//         res.status(200).json({"user created successfully" : user })
-//     } catch (error) {
-//         next(error)
-//     }
-// }
+export async function createUserController(req, res, next) {
+    try {
+        const user = await createUserService(req.body)
+        res.status(200).json({"user created successfully" : user })
+    } catch (error) {
+        next(error)
+    }
+}
