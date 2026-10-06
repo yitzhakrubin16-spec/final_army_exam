@@ -1,8 +1,10 @@
 import bcrypt from "bcrypt"
-import { userSchema } from "../Schemas/userSchema.js"
+import { userSchema, userLoginSchema } from "../Schemas/userSchema.js"
 import { createUser,
-    findUserByEmail
+    findUserByEmail,
+    getAllUsers
  } from "../DAL/apiAuthDAL.js"
+import { generateToken } from "../utils/generateToken.js"
 
 
 export async function createUserService(body){
@@ -43,4 +45,51 @@ export async function createUserService(body){
         ...user
     }
 
+}
+
+
+export async function loginAuthService(body){
+    const result = userLoginSchema.safeParse(body)
+
+     if (!result.success) {
+        const error = new Error("Invalid user details")
+        error.status = 400
+        throw error
+    }
+
+    const user = await findUserByEmail(result.data.email)
+    
+    if(!user){
+        const error = new Error("User not found")
+        error.status = 404
+        throw error
+    }
+
+    const passwordMatch = await bcrypt.compare(result.data.password, user.password)
+
+    if (!passwordMatch) {
+        const error = new Error("Invalid email or password")
+        error.status = 401
+        throw error
+    }
+
+    const safeUser = {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        assignedArena: user.assignedArena
+    }
+
+    const token = generateToken(safeUser)
+
+    return {
+        ...safeUser,
+        token
+    }
+}
+
+export async function getAllUsersService() {
+    const users = await getAllUsers()
+
+    return users
 }

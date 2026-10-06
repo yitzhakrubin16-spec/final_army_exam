@@ -1,24 +1,26 @@
 import { 
-    createUserService
+    createUserService,
+    loginAuthService,
+    getAllUsersService
  } from "../services/apiAuthServices.js"
 
-// export async function loginAuthController(req, res, next) {
-//     try {
-//         const user = await loginAuthService(req.body)
-//         res.status(201).json({user})
-//     } catch (error) {
-//         next(error)
-//     }
-// }
+export async function loginAuthController(req, res, next) {
+    try {
+        const user = await loginAuthService(req.body)
+        res.status(201).json({user})
+    } catch (error) {
+        next(error)
+    }
+}
 
-// export async function getAllUsersController(req, res, next) {
-//     try {
-//         const users = await getAllUsersService()
-//         res.json({users})
-//     } catch (error) {
-//         next(error)
-//     }
-// }
+export async function getAllUsersController(req, res, next) {
+    try {
+        const users = await getAllUsersService()
+        res.json({users})
+    } catch (error) {
+        next(error)
+    }
+}
 
 // export async function getUserController(req, res, next) {
 //     try {

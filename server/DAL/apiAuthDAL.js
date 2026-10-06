@@ -10,3 +10,7 @@ export async function createUser(user) {
 export async function findUserByEmail(email) {
     return users.findOne({email})
 }
+
+export async function getAllUsers() {
+    return users.find().toArray()
+}
