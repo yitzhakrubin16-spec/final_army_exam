@@ -18,3 +18,7 @@ export async function getAllUsers() {
 export async function findUserById(id) {
     return users.findOne({_id : new ObjectId(id)})
 }
+
+export async function deleteUser(id) {
+    return users.findOneAndDelete({_id: new ObjectId(id)})
+}

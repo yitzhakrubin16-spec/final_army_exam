@@ -3,15 +3,23 @@ import { userSchema, userLoginSchema } from "../Schemas/userSchema.js"
 import { createUser,
     findUserByEmail,
     getAllUsers,
-    findUserById
+    findUserById,
+    deleteUser
  } from "../DAL/apiAuthDAL.js"
 import { generateToken } from "../utils/generateToken.js"
+import { ObjectId } from "mongodb"
 
 
-export async function createUserService(body){
+export async function createUserService(body, role){
+    if(role !== "admin"){
+        const error = new Error("Only admin user can create new users")
+        error.status = 403
+        throw error
+    }
+    
     const result = userSchema.safeParse(body)
 
-     if (!result.success) {
+    if (!result.success) {
         const error = new Error("Invalid user details")
         error.status = 400
         throw error
@@ -89,7 +97,13 @@ export async function loginAuthService(body){
     }
 }
 
-export async function getAllUsersService() {
+export async function getAllUsersService(role) {
+     if(role !== "admin"){
+        const error = new Error("Only admin user can see all users")
+        error.status = 403
+        throw error
+    }
+
     const users = await getAllUsers()
 
     return users
@@ -99,4 +113,31 @@ export async function getUserService(id) {
     const user = await findUserById(id)
 
     return user
+}
+
+
+export async function deleteUserService(id, role) {
+    if(role !== "admin"){
+        const error = new Error("Only admin user can delete users")
+        error.status = 403
+        throw error
+    }
+
+    if(!(ObjectId.isValid(id))){
+        const error = new Error("Valid user ID required");
+        error.status = 400;
+        throw error;
+    }
+
+    const isEsixt = await findUserById(id);
+
+    if(!isEsixt){
+        const error = new Error("User Not Found");
+        error.status = 404;
+        throw error;
+    }
+
+    const response = await deleteUser(id)
+    
+    return response
 }

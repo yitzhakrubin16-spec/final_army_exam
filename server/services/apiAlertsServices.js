@@ -74,10 +74,7 @@ export async function deleteAlertService(id) {
 
     const response = await deleteAlert(id)
     
-    return {
-        id: response.insertedId.toString(),
-        ...response
-    }
+    return response
 }
 
 export async function updateAlertService(id, body) {
