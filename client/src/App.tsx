@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage'
 import AddAlert from './pages/AddAlert'
 import { useEffect, useState } from 'react'
 import { getAlerts } from './services/alertService'
+import Login from './pages/Login'
 
 type Alert = {
   id: string
@@ -42,6 +43,7 @@ function App() {
       <Route path="/alerts" element={<Alerts />} />
       <Route path="/map" element={<AlertsMap alerts={alerts} />} />
       <Route path="/add_alert" element={<AddAlert />} />
+      <Route path="/login" element={<Login />}></Route>
     </Routes>
   )
 }
