@@ -9,7 +9,7 @@ import {
 export async function loginAuthController(req, res, next) {
     try {
         const user = await loginAuthService(req.body)
-        res.status(201).json({user})
+        res.json({user})
     } catch (error) {
         next(error)
     }
@@ -48,7 +48,7 @@ export async function deleteUserController(req, res, next) {
 export async function createUserController(req, res, next) {
     try {
         const user = await createUserService(req.body, req.user.role)
-        res.status(200).json({"user created successfully" : user })
+        res.status(201).json({"user created successfully" : user })
     } catch (error) {
         next(error)
     }
