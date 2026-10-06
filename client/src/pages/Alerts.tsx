@@ -15,7 +15,8 @@ type Alert = {
 function Alerts() {
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null)
-
+  const [filterArena, setFilterArena] = useState("")
+  const [filterPriority, setFilterPriority] = useState("")
   const [displayName, setDisplayName] = useState("")
   const [description, setDescription] = useState("")
   const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "Critical">("Low")
@@ -30,7 +31,15 @@ function Alerts() {
     async function loadAlerts() {
       try {
         const response = await getAlerts()
+        if(filterArena){
+          setAlerts(response.alerts.filter((alert: { arena: string }) => alert.arena === filterArena))
+        }
+        else if(filterPriority){
+          setAlerts(response.alerts.filter((alert: { priority: string }) => alert.priority === filterPriority))
+        }
+        else{
         setAlerts(response.alerts)
+        }
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message)
@@ -115,9 +124,22 @@ function Alerts() {
     <>
       <div>
         <h1>Alerts</h1>
-
         {error && <p>{error}</p>}
-
+        <select value={filterArena}
+          onChange={(e) => setFilterArena(e.target.value)}
+          >
+            <option value="North">North</option>
+            <option value="Center">Center</option>
+            <option value="South">South</option>
+          </select>
+        <select value={filterPriority}
+          onChange={(e) => setFilterPriority(e.target.value)}
+          >
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+          </select>
         <ol>
           {alerts.map((alert) => (
             <li key={alert.id}>

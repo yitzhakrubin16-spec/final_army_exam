@@ -12,6 +12,8 @@ function MainPage() {
     <h1>Watching Eye System</h1>
     <button onClick={() => handleClick('/alerts')}>Alerts</button>
     <button onClick={() => handleClick('/add_alert')}>Add alert</button>
+    <button onClick={() => handleClick('/map')}>Map</button>
+    
     </>
   )
 }
