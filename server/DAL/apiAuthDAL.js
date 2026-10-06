@@ -14,3 +14,7 @@ export async function findUserByEmail(email) {
 export async function getAllUsers() {
     return users.find().toArray()
 }
+
+export async function findUserById(id) {
+    return users.findOne({_id : new ObjectId(id)})
+}

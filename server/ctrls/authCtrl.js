@@ -1,7 +1,8 @@
 import { 
     createUserService,
     loginAuthService,
-    getAllUsersService
+    getAllUsersService,
+    getUserService
  } from "../services/apiAuthServices.js"
 
 export async function loginAuthController(req, res, next) {
@@ -22,14 +23,14 @@ export async function getAllUsersController(req, res, next) {
     }
 }
 
-// export async function getUserController(req, res, next) {
-//     try {
-//         const user = await getUserService(req.headers)
-//         res.json({user})
-//     } catch (error) {
-//         next(error)
-//     }
-// }
+export async function getUserController(req, res, next) {
+    try {
+        const user = await getUserService(req.user.id)
+        res.json({user})
+    } catch (error) {
+        next(error)
+    }
+}
 
 // export async function deleteUserController(req, res, next) {
 //     try {

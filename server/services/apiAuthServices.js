@@ -2,7 +2,8 @@ import bcrypt from "bcrypt"
 import { userSchema, userLoginSchema } from "../Schemas/userSchema.js"
 import { createUser,
     findUserByEmail,
-    getAllUsers
+    getAllUsers,
+    findUserById
  } from "../DAL/apiAuthDAL.js"
 import { generateToken } from "../utils/generateToken.js"
 
@@ -92,4 +93,10 @@ export async function getAllUsersService() {
     const users = await getAllUsers()
 
     return users
+}
+
+export async function getUserService(id) {
+    const user = await findUserById(id)
+
+    return user
 }
